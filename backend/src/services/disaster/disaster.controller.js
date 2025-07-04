@@ -1,9 +1,16 @@
 const disasterService = require('./disaster.service');
 const { getIO } = require('../../websockets/socket');
+const geocodingService = require('../geocoding/geocoding.service');
 
 const createDisaster = async (req, res) => {
   try {
     const disasterData = { ...req.body, owner_id: req.user.id };
+    const { description } = disasterData;
+    console.log('Creating disaster with description:', description);
+    const geocodedData = await geocodingService.processLocation(description);
+    console.log('Geocoded data:', geocodedData);
+    disasterData.location = geocodedData.geography;
+    disasterData.location_name = geocodedData.locationName;
     const newDisaster = await disasterService.createDisaster(disasterData);
     // Broadcast to a general 'disasters' room for list updates
     getIO().emit('disaster_created', newDisaster);
@@ -44,7 +51,10 @@ const updateDisaster = async (req, res) => {
     if (disaster.owner_id !== req.user.id && req.user.role !== 'admin') {
         return res.status(403).json({ message: 'Forbidden: You do not own this resource' });
     }
-
+    const { description } = req.body;
+    const geocodedData = await geocodingService.processLocation(description);
+    req.body.location = geocodedData.geography;
+    req.body.location_name = geocodedData.locationName;
     const updatedDisaster = await disasterService.updateDisaster(req.params.id, req.body);
     // Broadcast to the specific disaster room
     getIO().to(req.params.id).emit('disaster_updated', updatedDisaster);

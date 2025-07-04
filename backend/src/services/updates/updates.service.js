@@ -2,7 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const CacheService = require('../../utils/cache');
 
-const FEMA_URL = 'https://www.fema.gov/disasters';
+const FEMA_URL = 'https://www.fema.gov/disaster';
 const RED_CROSS_URL = 'https://www.redcross.org/about-us/news-and-events/news.html';
 
 async function fetchFemaUpdates() {

@@ -1,0 +1,16 @@
+{
+  "name": "disaster-response-platform",
+  "version": "1.0.0",
+  "description": "A full-stack disaster response coordination platform.",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -29,7 +29,23 @@ const getReportsByDisaster = async (disasterId) => {
   return data;
 };
 
+const verifyReport = async (reportId) => {
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .update(verification_status,'verified')
+    .eq('id', reportId)
+    .select();
+
+  if (error) {
+    console.error(`Error verifying report ${reportId}:`, error);
+    throw new Error(error.message);
+  }
+
+  return data[0];
+};
+
 module.exports = {
   createReport,
   getReportsByDisaster,
+  verifyReport,
 };

@@ -9,6 +9,7 @@ router.use(authenticate);
 
 // Define the routes relative to /api/disasters/:disasterId/reports
 router.post('/', authorize(['admin', 'contributor']), reportsController.createReport);
+router.post('/:reportId/status', authorize(['admin']), reportsController.verifyReport);
 router.get('/', reportsController.getReportsByDisaster);
 
 module.exports = router;
