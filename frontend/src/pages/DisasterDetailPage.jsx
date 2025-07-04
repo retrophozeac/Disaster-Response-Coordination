@@ -5,7 +5,10 @@ import { fetchDisasters } from '../features/disasters/disastersSlice';
 import { fetchReports } from '../features/reports/reportsSlice';
 import { fetchResources } from '../features/resources/resourcesSlice';
 import { createReport, createResource, deleteDisaster } from '../api';
-import { Container, Typography, Card, CardContent, CardMedia, List, ListItem, ListItemText, Divider, TextField, Button, Box, Chip } from '@mui/material';
+import { Container, Typography, Card, CardContent, CardMedia, List, ListItem, ListItemText, Divider, TextField, Button, Box, Chip, Grid, Tab, Tabs } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
 
 const ReportForm = ({ disasterId }) => {
   const [content, setContent] = useState('');
@@ -44,7 +47,7 @@ const ReportForm = ({ disasterId }) => {
         value={imageUrl}
         onChange={(e) => setImageUrl(e.target.value)}
       />
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
+      <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }} startIcon={<SendIcon />}>
         Submit Report
       </Button>
     </Box>
@@ -97,7 +100,7 @@ const ResourceForm = ({ disasterId }) => {
         value={type}
         onChange={(e) => setType(e.target.value)}
       />
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
+      <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }} startIcon={<SendIcon />}>
         Add Resource
       </Button>
     </Box>
@@ -108,6 +111,7 @@ const DisasterDetailPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [tabValue, setTabValue] = useState(0);
 
   const { disasters, loading: disastersLoading, error: disastersError } = useSelector((state) => state.disasters);
   const { reports, loading: reportsLoading, error: reportsError } = useSelector((state) => state.reports);
@@ -135,6 +139,10 @@ const DisasterDetailPage = () => {
     dispatch(fetchResources(id));
   }, [id, dispatch, disaster]);
 
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
   return (
     <Container>
       {(disastersLoading || reportsLoading || resourcesLoading) && <Typography>Loading...</Typography>}
@@ -149,8 +157,8 @@ const DisasterDetailPage = () => {
               {disaster.title}
             </Typography>
             <Box>
-              <Button variant="outlined" sx={{ mr: 1 }} onClick={() => navigate(`/disaster/edit/${id}`)}>Edit</Button>
-              <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+              <Button variant="outlined" sx={{ mr: 1 }} startIcon={<EditIcon />} onClick={() => navigate(`/disaster/edit/${id}`)}>Edit</Button>
+              <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={handleDelete}>Delete</Button>
             </Box>
           </Box>
           <Typography variant="h6" gutterBottom>
@@ -162,70 +170,77 @@ const DisasterDetailPage = () => {
         </CardContent>
       </Card>
 
-      <Typography variant="h5" gutterBottom style={{ marginTop: '20px' }}>
-        Reports
-      </Typography>
-      <List>
-        {reports.map((report) => (
-          <React.Fragment key={report.id}>
-            <ListItem alignItems="flex-start">
-              {report.image_url && (
-                <CardMedia
-                  component="img"
-                  style={{ width: 150, marginRight: 20 }}
-                  image={report.image_url}
-                  alt="Report image"
-                />
-              )}
-              <ListItemText
-                primary={report.content}
-                secondary={
-                  <>
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      color="text.primary"
-                    >
-                      {`Reported at: ${new Date(report.created_at).toLocaleString()}`}
-                    </Typography>
-                    <Chip
-                      label={report.verification_status || 'pending'}
-                      size="small"
-                      color={
-                        report.verification_status === 'verified'
-                          ? 'success'
-                          : report.verification_status === 'debunked'
-                          ? 'error'
-                          : 'default'
-                      }
-                      sx={{ ml: 1 }}
-                    />
-                  </>
-                }
-              />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-          </React.Fragment>
-        ))}
-      </List>
-
-      <Typography variant="h5" gutterBottom style={{ marginTop: '20px' }}>
-        Resources
-      </Typography>
-      <List>
-        {resources.map((resource) => (
-          <ListItem key={resource.id}>
-            <ListItemText primary={resource.name} secondary={`Location: ${resource.location_name}`} />
-          </ListItem>
-        ))}
-      </List>
-
-      <Divider style={{ margin: '40px 0' }} />
-
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
-        <ReportForm disasterId={id} />
-        <ResourceForm disasterId={id} />
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
+        <Tabs value={tabValue} onChange={handleTabChange} aria-label="disaster details tabs">
+          <Tab label="Reports" />
+          <Tab label="Resources" />
+          <Tab label="Contribute" />
+        </Tabs>
       </Box>
+      {tabValue === 0 && (
+        <List>
+          {reports.map((report) => (
+            <React.Fragment key={report.id}>
+              <ListItem alignItems="flex-start">
+                {report.image_url && (
+                  <CardMedia
+                    component="img"
+                    style={{ width: 150, marginRight: 20 }}
+                    image={report.image_url}
+                    alt="Report image"
+                  />
+                )}
+                <ListItemText
+                  primary={report.content}
+                  secondary={
+                    <>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="text.primary"
+                      >
+                        {`Reported at: ${new Date(report.created_at).toLocaleString()}`}
+                      </Typography>
+                      <Chip
+                        label={report.verification_status || 'pending'}
+                        size="small"
+                        color={
+                          report.verification_status === 'verified'
+                            ? 'success'
+                            : report.verification_status === 'debunked'
+                            ? 'error'
+                            : 'default'
+                        }
+                        sx={{ ml: 1 }}
+                      />
+                    </>
+                  }
+                />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </React.Fragment>
+          ))}
+        </List>
+      )}
+      {tabValue === 1 && (
+        <List>
+          {resources.map((resource) => (
+            <ListItem key={resource.id}>
+              <ListItemText primary={resource.name} secondary={`Location: ${resource.location_name}`} />
+            </ListItem>
+          ))}
+        </List>
+      )}
+      {tabValue === 2 && (
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6}>
+            <ReportForm disasterId={id} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ResourceForm disasterId={id} />
+          </Grid>
+        </Grid>
+      )}
         </>
       )}
     </Container>
