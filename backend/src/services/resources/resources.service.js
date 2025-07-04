@@ -29,7 +29,7 @@ const getResourcesByDisaster = async (disasterId) => {
     return data;
   };
 
-const findNearbyResources = async (lat, lon, radius = 10000) => {
+const findNearbyResources = async (lat, lon, radius = 20000) => {
     const { data, error } = await supabase.rpc('find_nearby_resources', {
         lat,
         lon,

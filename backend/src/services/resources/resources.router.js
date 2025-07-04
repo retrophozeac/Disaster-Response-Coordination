@@ -12,7 +12,7 @@ router.get('/', resourcesController.getResourcesByDisaster);
 // A separate route for finding nearby resources, not nested under a specific disaster
 const nearbyRouter = express.Router();
 nearbyRouter.use(authenticate);
-nearbyRouter.get('/', resourcesController.findNearbyResources);
+nearbyRouter.post('/', resourcesController.findNearbyResources);
 
 module.exports = {
     disasterResourcesRouter: router,

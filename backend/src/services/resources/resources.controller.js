@@ -56,7 +56,7 @@ const findNearbyResources = async (req, res) => {
     const { lat, lon } = geocodedData.coordinates;
 
     try {
-      const resources = await resourcesService.findNearbyResources(parseFloat(lat), parseFloat(lon),20);
+      const resources = await resourcesService.findNearbyResources(parseFloat(lat), parseFloat(lon));
       res.status(200).json(resources);
     } catch (error) {
       res.status(500).json({ message: 'Error finding nearby resources', error: error.message });

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchDisasters } from '../features/disasters/disastersSlice';
 import { fetchReports } from '../features/reports/reportsSlice';
 import { fetchResources } from '../features/resources/resourcesSlice';
-import { createReport, createResource } from '../api';
-import { Container, Typography, Card, CardContent, CardMedia, List, ListItem, ListItemText, Divider, TextField, Button, Box } from '@mui/material';
+import { createReport, createResource, deleteDisaster } from '../api';
+import { Container, Typography, Card, CardContent, CardMedia, List, ListItem, ListItemText, Divider, TextField, Button, Box, Chip } from '@mui/material';
 
 const ReportForm = ({ disasterId }) => {
   const [content, setContent] = useState('');
@@ -107,12 +107,25 @@ const ResourceForm = ({ disasterId }) => {
 const DisasterDetailPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { disasters, loading: disastersLoading, error: disastersError } = useSelector((state) => state.disasters);
   const { reports, loading: reportsLoading, error: reportsError } = useSelector((state) => state.reports);
   const { resources, loading: resourcesLoading, error: resourcesError } = useSelector((state) => state.resources);
 
   const disaster = disasters.find((d) => d.id === id);
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this disaster?')) {
+      try {
+        await deleteDisaster(id);
+        dispatch(fetchDisasters());
+        navigate('/');
+      } catch (error) {
+        console.error('Failed to delete disaster:', error);
+      }
+    }
+  };
 
   useEffect(() => {
     if (!disaster) {
@@ -131,8 +144,17 @@ const DisasterDetailPage = () => {
         <>
       <Card>
         <CardContent>
-          <Typography variant="h4" gutterBottom>
-            {disaster.title}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h4" gutterBottom>
+              {disaster.title}
+            </Typography>
+            <Box>
+              <Button variant="outlined" sx={{ mr: 1 }} onClick={() => navigate(`/disaster/edit/${id}`)}>Edit</Button>
+              <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+            </Box>
+          </Box>
+          <Typography variant="h6" gutterBottom>
+            {disaster.location_name}
           </Typography>
           <Typography variant="body1" gutterBottom>
             {disaster.description}
@@ -157,7 +179,29 @@ const DisasterDetailPage = () => {
               )}
               <ListItemText
                 primary={report.content}
-                secondary={`Reported at: ${new Date(report.created_at).toLocaleString()}`}
+                secondary={
+                  <>
+                    <Typography
+                      component="span"
+                      variant="body2"
+                      color="text.primary"
+                    >
+                      {`Reported at: ${new Date(report.created_at).toLocaleString()}`}
+                    </Typography>
+                    <Chip
+                      label={report.verification_status || 'pending'}
+                      size="small"
+                      color={
+                        report.verification_status === 'verified'
+                          ? 'success'
+                          : report.verification_status === 'debunked'
+                          ? 'error'
+                          : 'default'
+                      }
+                      sx={{ ml: 1 }}
+                    />
+                  </>
+                }
               />
             </ListItem>
             <Divider variant="inset" component="li" />

@@ -43,7 +43,17 @@ const HomePage = () => {
               onClick={() => navigate(`/disaster/${disaster.id}`)}
               sx={{ cursor: 'pointer', '&:hover': { backgroundColor: 'action.hover' } }}
             >
-              <ListItemText primary={disaster.title} secondary={disaster.description} />
+              <ListItemText
+                primary={disaster.title}
+                secondary={
+                  <>
+                    <Typography component="span" variant="body2" color="text.primary">
+                      {disaster.location_name}
+                    </Typography>
+                    {" — "}{disaster.description}
+                  </>
+                }
+              />
             </ListItem>
           </Card>
         ))}

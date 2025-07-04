@@ -21,8 +21,8 @@ const authorize = (roles = []) => {
   if (typeof roles === 'string') {
     roles = [roles];
   }
-
   return (req, res, next) => {
+    console.log('User:', req.user);
     if (!req.user || (roles.length && !roles.includes(req.user.role))) {
       return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
