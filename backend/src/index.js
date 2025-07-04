@@ -20,9 +20,13 @@ app.use(express.json());
 const disasterRoutes = require('./services/disaster/disaster.router');
 const geocodingRoutes = require('./services/geocoding/geocoding.router');
 const { nearbyResourcesRouter } = require('./services/resources/resources.router');
+const updatesRouter = require('./services/updates/updates.router');
+const verificationRouter = require('./services/verification/verification.router');
 app.use('/api/disasters', disasterRoutes);
 app.use('/api/geocode', geocodingRoutes);
 app.use('/api/resources/nearby', nearbyResourcesRouter);
+app.use('/api/updates', updatesRouter);
+app.use('/api/verification', verificationRouter);
 
 // Basic Route
 app.get('/', (req, res) => {

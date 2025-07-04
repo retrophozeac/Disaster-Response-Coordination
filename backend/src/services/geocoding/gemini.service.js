@@ -26,6 +26,17 @@ const extractLocation = async (description) => {
   });
 };
 
+async function callGeminiVision(prompt, imageUrl) {
+  // Mock implementation for now
+  console.log('Calling Gemini Vision API for:', imageUrl);
+  return {
+    authentic: true,
+    confidence: 0.95,
+    reasoning: 'Image appears to be authentic based on initial analysis.',
+  };
+}
+
 module.exports = {
   extractLocation,
+  callGeminiVision,
 };

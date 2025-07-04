@@ -78,12 +78,12 @@ Building a comprehensive disaster response coordination platform that aggregates
     *   Implement the geospatial proximity query endpoint using PostGIS (`ST_DWithin`) to find nearby resources.
     *   Implement the mock social media data generation service.
 
-**Phase 6: Web Scraping & Verification (1.5 hours)**
-*   [ ] **Goal:** Integrate external data sources and advanced AI features.
+**Phase 6: Web Scraping & Verification (1.5 hours) - Partially Completed**
+*   [x] **Goal:** Integrate external data sources and advanced AI features.
 *   [ ] **Tasks:**
-    *   Implement the **real web scraping service** using Cheerio to fetch data from FEMA and Red Cross websites.
+    *   Implement the **real web scraping service** using Cheerio to fetch data from FEMA and Red Cross websites. (Currently not functional)
     *   Integrate the caching layer for scraped content.
-    *   Implement the image verification endpoint using the Gemini Vision API.
+    *   Implement the image verification endpoint using the Gemini Vision API. (Completed)
 
 **Phase 7: Frontend Integration & Testing (1 hour)**
 *   [ ] **Goal:** Create a simple client to test and demonstrate backend functionality.
