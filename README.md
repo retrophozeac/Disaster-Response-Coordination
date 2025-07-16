@@ -88,10 +88,6 @@ This is a comprehensive disaster response coordination platform that aggregates 
 
 The application will be available at `http://localhost:5173`.
 
-## API Endpoints
-
-A full description of the API can be found in the `memory-bank/api-documentation.md` file.
-
 ## Deployment
 
 The frontend is deployed on Vercel and the backend is deployed on Render.
